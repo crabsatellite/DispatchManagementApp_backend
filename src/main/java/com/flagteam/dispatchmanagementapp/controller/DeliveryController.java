@@ -1,5 +1,7 @@
 package com.flagteam.dispatchmanagementapp.controller;
 
+import com.flagteam.dispatchmanagementapp.dto.ApiErrorResponse;
+import com.flagteam.dispatchmanagementapp.dto.ApiResponse;
 import com.flagteam.dispatchmanagementapp.exception.ApiException;
 import com.flagteam.dispatchmanagementapp.model.DeliveryItem;
 import com.flagteam.dispatchmanagementapp.service.DeliveryService;
@@ -29,10 +31,12 @@ public class DeliveryController {
             @RequestParam(value = "sort", defaultValue = "deliveryDate:desc") String sort) {
         try {
             List<DeliveryItem> deliveries = deliveryService.getDeliveries(userId, limit, offset, sort);
-            return ResponseEntity.ok(deliveries);
+            ApiResponse<List<DeliveryItem>> response = new ApiResponse<>(200, deliveries);
+            return ResponseEntity.ok(response);
         } catch (UserNotFoundException e) {
-            return ResponseEntity.status(404).body(new ApiException("User not found"));
+            ApiErrorResponse error = new ApiErrorResponse("User not found", "USER_NOT_FOUND");
+            ApiResponse<ApiErrorResponse> response = new ApiResponse<>(404, error);
+            return ResponseEntity.status(404).body(response);
         }
     }
-
 }
