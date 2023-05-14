@@ -1,16 +1,21 @@
 package com.flagteam.dispatchmanagementapp.service;
 
+import com.flagteam.dispatchmanagementapp.dto.DeliveryDto;
 import com.flagteam.dispatchmanagementapp.model.DeliveryItem;
+import com.flagteam.dispatchmanagementapp.model.Location;
 import com.flagteam.dispatchmanagementapp.model.User;
 import com.flagteam.dispatchmanagementapp.repository.DeliveryRepository;
+import com.flagteam.dispatchmanagementapp.repository.LocationRepository;
 import com.flagteam.dispatchmanagementapp.repository.UserRepository;
 import com.flagteam.dispatchmanagementapp.exception.UserNotFoundException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,14 +24,16 @@ import java.util.UUID;
 public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final UserRepository userRepository;
+    private final LocationRepository locationRepository;
 
-    public DeliveryServiceImpl(DeliveryRepository deliveryRepository, UserRepository userRepository) {
+    public DeliveryServiceImpl(DeliveryRepository deliveryRepository, UserRepository userRepository, LocationRepository locationRepository) {
         this.deliveryRepository = deliveryRepository;
         this.userRepository = userRepository;
+        this.locationRepository = locationRepository;
     }
 
     @Override
-    public List<DeliveryItem> getDeliveries(UUID userId, int limit, int offset, String sort) {
+    public List<DeliveryDto> getDeliveries(UUID userId, int limit, int offset, String sort) {
         // Check if the user exists
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
@@ -59,6 +66,28 @@ public class DeliveryServiceImpl implements DeliveryService {
         Pageable pageable = PageRequest.of(offset, limit, Sort.by(sortDirection, field));
 
         Page<DeliveryItem> deliveryPage = deliveryRepository.findByUserId(userId, pageable);
-        return deliveryPage.getContent();
+
+        List<DeliveryItem> deliveryItems = deliveryPage.getContent();
+
+        // Create a list of DeliveryDto objects to hold the delivery data along with location data
+        List<DeliveryDto> deliveryDtos = new ArrayList<>();
+
+        for(DeliveryItem item : deliveryItems) {
+            DeliveryDto deliveryDto = new DeliveryDto();
+            // copy properties from DeliveryItem to DeliveryDto
+            BeanUtils.copyProperties(item, deliveryDto);
+
+            // get the location for the current delivery item
+            Location location = locationRepository.findByDeliveryId(item.getId());
+
+            // set the location properties to the DeliveryDto
+            deliveryDto.setCourierLastPositionLat(location.getLatitude());
+            deliveryDto.setCourierLastPositionLng(location.getLongitude());
+
+            // add the DeliveryDto to the list
+            deliveryDtos.add(deliveryDto);
+        }
+
+        return deliveryDtos;
     }
 }
