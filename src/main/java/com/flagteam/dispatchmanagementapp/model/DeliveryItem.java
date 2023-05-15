@@ -1,15 +1,14 @@
 package com.flagteam.dispatchmanagementapp.model;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "delivery_items")
+@Table(name = "delivery_item")
 public class DeliveryItem implements Serializable {
-    private static final long versionId=1L;
+    private static final long versionId = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -19,6 +18,7 @@ public class DeliveryItem implements Serializable {
     private DeliveryInfo deliveryInfo;
     @OneToMany
     private Set<Item> items;
+
     public UUID getId() {
         return id;
     }

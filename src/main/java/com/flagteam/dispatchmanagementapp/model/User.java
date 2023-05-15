@@ -1,25 +1,21 @@
 package com.flagteam.dispatchmanagementapp.model;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
-    private static final long versionId=1L;
+    private static final long versionId = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String username;
     private String email;
     private String password;
-    private Date create;
-    @OneToMany(mappedBy = "user")
-    private Set<DeliveryInfo> deliveryInfos;
+    private Date createTime;
 
     public UUID getId() {
         return id;
@@ -58,11 +54,11 @@ public class User implements Serializable {
     }
 
     public Date getCreate() {
-        return create;
+        return createTime;
     }
 
     public User setCreate(Date create) {
-        this.create = create;
+        this.createTime = create;
         return this;
     }
 }

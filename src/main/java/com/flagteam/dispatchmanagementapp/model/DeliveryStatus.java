@@ -1,19 +1,16 @@
 package com.flagteam.dispatchmanagementapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "delivery_status")
 public class DeliveryStatus implements Serializable {
-    private static final long versionId=1L;
+    private static final long versionId = 1L;
     @Id
     private UUID id;
-    private String status;
+    private Status status;
 
     public UUID getId() {
         return id;
@@ -24,11 +21,11 @@ public class DeliveryStatus implements Serializable {
         return this;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public DeliveryStatus setStatus(String status) {
+    public DeliveryStatus setStatus(Status status) {
         this.status = status;
         return this;
     }

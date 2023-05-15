@@ -1,7 +1,6 @@
 package com.flagteam.dispatchmanagementapp.model;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -9,10 +8,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "delivery_info")
 public class DeliveryInfo implements Serializable {
-    private static final long versionId=1L;
+    private static final long versionId = 1L;
     @Id
     private UUID id;
-    @Column(name="delivery_date")
+    @Column(name = "delivery_date")
     private Date deliveryDate;
     @Column(name = "warehouse_id")
     private int warehouseId;
@@ -20,7 +19,7 @@ public class DeliveryInfo implements Serializable {
     private boolean isRobot;
     private String sender;
     private String receiver;
-    @Column(name="sender_address")
+    @Column(name = "sender_address")
     private String senderAddress;
     @Column(name = "receiver_address")
     private String receiverAddress;

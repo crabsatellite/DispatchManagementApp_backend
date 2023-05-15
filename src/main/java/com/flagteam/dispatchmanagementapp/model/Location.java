@@ -1,7 +1,6 @@
 package com.flagteam.dispatchmanagementapp.model;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -10,17 +9,17 @@ import java.util.UUID;
 @Entity
 @Table(name = "location")
 public class Location implements Serializable {
-    private static final long versionId=1L;
+    private static final long versionId = 1L;
     @Id
     private UUID id;
-    private String type;
+    private String pointType;
     private Double latitude;
     private Double longitude;
-    private Date create;
-    private Date update;
+    private Date createTime;
+    private Date updateTime;
 
     @OneToMany
-    @JoinColumn(name = "delivery_id")
+    @JoinColumn(name = "deliveries")
     private Set<DeliveryInfo> deliveryInfos;
 
     public UUID getId() {
@@ -33,11 +32,11 @@ public class Location implements Serializable {
     }
 
     public String getType() {
-        return type;
+        return pointType;
     }
 
     public Location setType(String type) {
-        this.type = type;
+        this.pointType = type;
         return this;
     }
 
@@ -60,20 +59,20 @@ public class Location implements Serializable {
     }
 
     public Date getCreate() {
-        return create;
+        return createTime;
     }
 
     public Location setCreate(Date create) {
-        this.create = create;
+        this.createTime = create;
         return this;
     }
 
     public Date getUpdate() {
-        return update;
+        return updateTime;
     }
 
     public Location setUpdate(Date update) {
-        this.update = update;
+        this.updateTime = update;
         return this;
     }
 }
