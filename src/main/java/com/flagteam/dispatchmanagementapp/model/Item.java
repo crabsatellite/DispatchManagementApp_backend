@@ -13,7 +13,8 @@ public class Item implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String name;
-    @ManyToOne
+    private int quantity;
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="delivery_item_id")
     private DeliveryItem deliveryItem;
 
@@ -41,6 +42,15 @@ public class Item implements Serializable {
 
     public Item setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public Item setQuantity(int quantity) {
+        this.quantity = quantity;
         return this;
     }
 }

@@ -40,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/v1/users/register").permitAll()
             .antMatchers("/api/v1/users/login").permitAll()
             .antMatchers("/api/v1/deliveries").hasAuthority(USER)
-            .antMatchers("/api/v1/delivery_controller_test").hasAuthority(USER)
             .anyRequest().authenticated()
             .and()
             .csrf()
