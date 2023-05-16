@@ -5,26 +5,29 @@ import com.flagteam.dispatchmanagementapp.dto.ApiResponse;
 import com.flagteam.dispatchmanagementapp.dto.DeliveryDto;
 import com.flagteam.dispatchmanagementapp.exception.ApiException;
 import com.flagteam.dispatchmanagementapp.model.DeliveryItem;
+import com.flagteam.dispatchmanagementapp.model.Token;
+import com.flagteam.dispatchmanagementapp.model.User;
 import com.flagteam.dispatchmanagementapp.service.DeliveryService;
 import com.flagteam.dispatchmanagementapp.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/deliveries")
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
+
 
     public DeliveryController(DeliveryService deliveryService) {
         this.deliveryService = deliveryService;
     }
 
-    @GetMapping
+    @GetMapping("/api/v1/deliveries")
     public ResponseEntity<?> getDeliveries(
             @RequestParam(value = "userId")UUID userId,
             @RequestParam(value = "limit", defaultValue = "10") int limit,
@@ -39,5 +42,10 @@ public class DeliveryController {
             ApiResponse<ApiErrorResponse> response = new ApiResponse<>(404, error);
             return ResponseEntity.status(404).body(response);
         }
+    }
+
+    @GetMapping("/api/v1/delivery_controller_test")
+    public String testDeliveryController(Principal principal) {
+        return principal.getName();
     }
 }

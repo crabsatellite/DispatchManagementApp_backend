@@ -1,10 +1,12 @@
 package com.flagteam.dispatchmanagementapp.service;
 
 import com.flagteam.dispatchmanagementapp.dto.DeliveryDto;
+import com.flagteam.dispatchmanagementapp.model.DeliveryInfo;
 import com.flagteam.dispatchmanagementapp.model.DeliveryItem;
 import com.flagteam.dispatchmanagementapp.model.Location;
 import com.flagteam.dispatchmanagementapp.model.User;
-import com.flagteam.dispatchmanagementapp.repository.DeliveryRepository;
+import com.flagteam.dispatchmanagementapp.repository.DeliveryInfoRepository;
+import com.flagteam.dispatchmanagementapp.repository.DeliveryItemRepository;
 import com.flagteam.dispatchmanagementapp.repository.LocationRepository;
 import com.flagteam.dispatchmanagementapp.repository.UserRepository;
 import com.flagteam.dispatchmanagementapp.exception.UserNotFoundException;
@@ -22,12 +24,15 @@ import java.util.UUID;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
-    private final DeliveryRepository deliveryRepository;
+
+    private final DeliveryItemRepository deliveryItemRepository;
+    private final DeliveryInfoRepository deliveryInfoRepository;
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
 
-    public DeliveryServiceImpl(DeliveryRepository deliveryRepository, UserRepository userRepository, LocationRepository locationRepository) {
-        this.deliveryRepository = deliveryRepository;
+    public DeliveryServiceImpl(DeliveryItemRepository deliveryItemRepository, DeliveryInfoRepository deliveryInfoRepository, UserRepository userRepository, LocationRepository locationRepository) {
+        this.deliveryItemRepository = deliveryItemRepository;
+        this.deliveryInfoRepository = deliveryInfoRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
     }
@@ -65,29 +70,33 @@ public class DeliveryServiceImpl implements DeliveryService {
         Sort.Direction sortDirection = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(offset, limit, Sort.by(sortDirection, field));
 
-        Page<DeliveryItem> deliveryPage = deliveryRepository.findByUserId(userId, pageable);
-
-        List<DeliveryItem> deliveryItems = deliveryPage.getContent();
+        // Get all the delivery infos from the current user
+        Page<DeliveryInfo> deliveryInfos = deliveryInfoRepository.findByUser(user.get(), pageable);
 
         // Create a list of DeliveryDto objects to hold the delivery data along with location data
         List<DeliveryDto> deliveryDtos = new ArrayList<>();
 
-        for(DeliveryItem item : deliveryItems) {
+        for (DeliveryInfo deliveryInfo : deliveryInfos) {
+
+            Page<DeliveryItem> deliveryPage = deliveryItemRepository.findByDeliveryInfo(deliveryInfo, pageable);
+            List<DeliveryItem> deliveryItems = deliveryPage.getContent();
+
             DeliveryDto deliveryDto = new DeliveryDto();
-            // copy properties from DeliveryItem to DeliveryDto
-            BeanUtils.copyProperties(item, deliveryDto);
+            for(DeliveryItem item : deliveryItems) {
 
-            // get the location for the current delivery item
-            Location location = locationRepository.findByDeliveryId(item.getId());
+                // copy properties from DeliveryItem to DeliveryDto
+                BeanUtils.copyProperties(item, deliveryDto);
 
-            // set the location properties to the DeliveryDto
-            deliveryDto.setCourierLastPositionLat(location.getLatitude());
-            deliveryDto.setCourierLastPositionLng(location.getLongitude());
+                // get the location for the current delivery item
+                Location location = locationRepository.findByDeliveryInfo(deliveryInfo);
 
+                // set the location properties to the DeliveryDto
+                deliveryDto.setCourierLastPositionLat(location.getLatitude());
+                deliveryDto.setCourierLastPositionLng(location.getLongitude());
+            }
             // add the DeliveryDto to the list
             deliveryDtos.add(deliveryDto);
         }
-
         return deliveryDtos;
     }
 }
