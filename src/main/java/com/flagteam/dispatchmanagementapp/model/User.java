@@ -21,7 +21,7 @@ public class User implements Serializable {
     private String password;
     private LocalDate createdDate;
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade=CascadeType.ALL)
     private Set<DeliveryInfo> deliveryInfos;
 
     public String getEmail() {

@@ -1,14 +1,9 @@
 package com.flagteam.dispatchmanagementapp.service;
 
 import com.flagteam.dispatchmanagementapp.dto.DeliveryDto;
-import com.flagteam.dispatchmanagementapp.model.DeliveryInfo;
-import com.flagteam.dispatchmanagementapp.model.DeliveryItem;
-import com.flagteam.dispatchmanagementapp.model.Location;
-import com.flagteam.dispatchmanagementapp.model.User;
-import com.flagteam.dispatchmanagementapp.repository.DeliveryInfoRepository;
-import com.flagteam.dispatchmanagementapp.repository.DeliveryItemRepository;
-import com.flagteam.dispatchmanagementapp.repository.LocationRepository;
-import com.flagteam.dispatchmanagementapp.repository.UserRepository;
+import com.flagteam.dispatchmanagementapp.dto.DeliveryUploadDto;
+import com.flagteam.dispatchmanagementapp.model.*;
+import com.flagteam.dispatchmanagementapp.repository.*;
 import com.flagteam.dispatchmanagementapp.exception.UserNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -17,22 +12,29 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
 
     private final DeliveryItemRepository deliveryItemRepository;
     private final DeliveryInfoRepository deliveryInfoRepository;
+    private final DeliveryStatusRepository deliveryStatusRepository;
+    private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
 
-    public DeliveryServiceImpl(DeliveryItemRepository deliveryItemRepository, DeliveryInfoRepository deliveryInfoRepository, UserRepository userRepository, LocationRepository locationRepository) {
+    public DeliveryServiceImpl(DeliveryItemRepository deliveryItemRepository,
+                               DeliveryInfoRepository deliveryInfoRepository,
+                               DeliveryStatusRepository deliveryStatusRepository,
+                               ItemRepository itemRepository,
+                               UserRepository userRepository,
+                               LocationRepository locationRepository) {
         this.deliveryItemRepository = deliveryItemRepository;
         this.deliveryInfoRepository = deliveryInfoRepository;
+        this.deliveryStatusRepository = deliveryStatusRepository;
+        this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
     }
@@ -98,5 +100,48 @@ public class DeliveryServiceImpl implements DeliveryService {
             deliveryDtos.add(deliveryDto);
         }
         return deliveryDtos;
+    }
+
+    @Override
+    public void uploadDelivery(DeliveryUploadDto dto, String username) {
+
+        List<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        // Read data
+        DeliveryStatus deliveryStatus = dto.getDeliveryStatus();
+        DeliveryInfo deliveryInfo = dto.getDeliveryInfo();
+        DeliveryItem deliveryItem = dto.getDeliveryItem();
+        Location location = dto.getLocation();
+
+        // Save items
+        Set<Item> items = deliveryItem.getItems();
+        for (Item item : items) {
+            item.setDeliveryItem(deliveryItem);
+            itemRepository.save(item);
+        }
+
+        // Save delivery item
+        Set<DeliveryItem> deliveryItems = new HashSet<>();
+        deliveryItems.add(deliveryItem);
+        deliveryItemRepository.save(deliveryItem);
+
+        // Save delivery info
+        deliveryInfo.setUser(user.get(0));
+        deliveryInfo.setDeliveryStatus(deliveryStatus);
+        deliveryInfo.setDeliveryItem(deliveryItems);
+        deliveryInfoRepository.save(deliveryInfo);
+
+        // Save location
+        location.setDeliveryInfo(deliveryInfo);
+        location.setCreatedDate(LocalDate.now());
+        location.setUpdatedDate(LocalDate.now());
+        location.setType("COURIER_LAST_LOCATION");
+        locationRepository.save(location);
+
+        // Save delivery status
+        deliveryStatusRepository.save(deliveryStatus);
     }
 }

@@ -12,16 +12,34 @@ import java.util.UUID;
 public class Location implements Serializable {
     private static final long versionId=1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String type;
     private Double latitude;
     private Double longitude;
     private LocalDate createdDate;
     private LocalDate updatedDate;
-
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id")
     private DeliveryInfo deliveryInfo;
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public Location setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+        return this;
+    }
+
+    public LocalDate getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public Location setUpdatedDate(LocalDate updatedDate) {
+        this.updatedDate = updatedDate;
+        return this;
+    }
 
     public UUID getId() {
         return id;
@@ -59,21 +77,12 @@ public class Location implements Serializable {
         return this;
     }
 
-    public LocalDate getCreate() {
-        return createdDate;
+    public DeliveryInfo getDeliveryInfo() {
+        return deliveryInfo;
     }
 
-    public Location setCreate(LocalDate createdDate) {
-        this.createdDate = createdDate;
-        return this;
-    }
-
-    public LocalDate getUpdate() {
-        return updatedDate;
-    }
-
-    public Location setUpdate(LocalDate updatedDate) {
-        this.updatedDate = updatedDate;
+    public Location setDeliveryInfo(DeliveryInfo deliveryInfo) {
+        this.deliveryInfo = deliveryInfo;
         return this;
     }
 }

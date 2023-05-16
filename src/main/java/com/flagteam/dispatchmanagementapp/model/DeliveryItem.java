@@ -16,12 +16,11 @@ public class DeliveryItem implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JoinColumn(name = "delivery_item_id")
     private UUID id;
-    private int quantity;
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_info_id")
     private DeliveryInfo deliveryInfo;
-    @OneToMany(mappedBy = "deliveryItem")
+    @OneToMany(mappedBy = "deliveryItem", cascade=CascadeType.ALL)
     private Set<Item> items;
 
     public UUID getId() {
@@ -51,12 +50,4 @@ public class DeliveryItem implements Serializable {
         return this;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public DeliveryItem setQuantity(int quantity) {
-        this.quantity = quantity;
-        return this;
-    }
 }

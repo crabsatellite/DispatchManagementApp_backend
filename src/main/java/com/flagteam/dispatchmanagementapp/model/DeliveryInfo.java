@@ -1,5 +1,7 @@
 package com.flagteam.dispatchmanagementapp.model;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 
 import java.io.Serializable;
@@ -19,24 +21,30 @@ public class DeliveryInfo implements Serializable {
     private LocalDate deliveryDate;
     @Column(name = "warehouse_id")
     private int warehouseId;
-    @Column(name = "is_robot")
-    private boolean isRobot;
-    private String sender;
-    private String receiver;
+    @Column(name = "courier_id")
+    private int courierId;
+    @Column(name="sender_name")
+    private String senderName;
+    @Column(name="receiver_name")
+    private String receiverName;
+    @Column(name="receiver_email")
+    private String receiverEmail;
+    @Column(name="receiver_phone_number")
+    private String receiverPhoneNumber;
     @Column(name="sender_address")
     private String senderAddress;
     @Column(name = "receiver_address")
     private String receiverAddress;
-    @Column(name = "pick_up_speed")
+    @Column(name = "pickup_speed")
     private String pickUpSpeed;
     @Column(name = "delivery_speed")
     private String deliverySpeed;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id")
     private DeliveryStatus deliveryStatus;
-    @OneToMany(mappedBy = "deliveryInfo")
+    @OneToMany(mappedBy = "deliveryInfo", cascade=CascadeType.ALL)
     private Set<DeliveryItem> deliveryItem;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -94,30 +102,48 @@ public class DeliveryInfo implements Serializable {
         return this;
     }
 
-    public boolean isRobot() {
-        return isRobot;
+    public int getCourierId() {
+        return courierId;
     }
 
-    public DeliveryInfo setRobot(boolean robot) {
-        isRobot = robot;
+    public DeliveryInfo setCourierId(int courierId) {
+        this.courierId = courierId;
         return this;
     }
 
-    public String getSender() {
-        return sender;
+    public String getSenderName() {
+        return senderName;
     }
 
-    public DeliveryInfo setSender(String sender) {
-        this.sender = sender;
+    public DeliveryInfo setSenderName(String senderName) {
+        this.senderName = senderName;
         return this;
     }
 
-    public String getReceiver() {
-        return receiver;
+    public String getReceiverName() {
+        return receiverName;
     }
 
-    public DeliveryInfo setReceiver(String receiver) {
-        this.receiver = receiver;
+    public DeliveryInfo setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+        return this;
+    }
+
+    public String getReceiverEmail() {
+        return receiverEmail;
+    }
+
+    public DeliveryInfo setReceiverEmail(String receiverEmail) {
+        this.receiverEmail = receiverEmail;
+        return this;
+    }
+
+    public String getReceiverPhoneNumber() {
+        return receiverPhoneNumber;
+    }
+
+    public DeliveryInfo setReceiverPhoneNumber(String receiverPhoneNumber) {
+        this.receiverPhoneNumber = receiverPhoneNumber;
         return this;
     }
 
