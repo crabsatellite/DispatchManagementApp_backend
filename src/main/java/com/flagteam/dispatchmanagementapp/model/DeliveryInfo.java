@@ -1,19 +1,22 @@
 package com.flagteam.dispatchmanagementapp.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "delivery_info")
+@Table(name = "delivery_info_table")
 public class DeliveryInfo implements Serializable {
     private static final long versionId=1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="delivery_info_id")
     private UUID id;
     @Column(name="delivery_date")
-    private Date deliveryDate;
+    private LocalDate deliveryDate;
     @Column(name = "warehouse_id")
     private int warehouseId;
     @Column(name = "is_robot")
@@ -28,12 +31,41 @@ public class DeliveryInfo implements Serializable {
     private String pickUpSpeed;
     @Column(name = "delivery_speed")
     private String deliverySpeed;
+    @OneToOne
+    @JoinColumn(name = "status_id")
+    private DeliveryStatus deliveryStatus;
+    @OneToMany(mappedBy = "deliveryInfo")
+    private Set<DeliveryItem> deliveryItem;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToOne
-    @JoinColumn(name = "status")
-    private DeliveryStatus deliveryStatus;
+
+    public User getUser() {
+        return user;
+    }
+
+    public DeliveryInfo setUser(User user) {
+        this.user = user;
+        return this;
+    }
+
+    public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public DeliveryInfo setDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+        return this;
+    }
+
+    public Set<DeliveryItem> getDeliveryItem() {
+        return deliveryItem;
+    }
+
+    public DeliveryInfo setDeliveryItem(Set<DeliveryItem> deliveryItem) {
+        this.deliveryItem = deliveryItem;
+        return this;
+    }
 
     public UUID getId() {
         return id;
@@ -44,11 +76,11 @@ public class DeliveryInfo implements Serializable {
         return this;
     }
 
-    public Date getDeliveryDate() {
+    public LocalDate getDeliveryDate() {
         return deliveryDate;
     }
 
-    public DeliveryInfo setDeliveryDate(Date deliveryDate) {
+    public DeliveryInfo setDeliveryDate(LocalDate deliveryDate) {
         this.deliveryDate = deliveryDate;
         return this;
     }

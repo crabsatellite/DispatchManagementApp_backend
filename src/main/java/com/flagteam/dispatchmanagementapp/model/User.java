@@ -1,14 +1,16 @@
 package com.flagteam.dispatchmanagementapp.model;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user_table")
 public class User implements Serializable {
     private static final long versionId=1L;
     @Id
@@ -17,27 +19,10 @@ public class User implements Serializable {
     private String username;
     private String email;
     private String password;
-    private Date create;
+    private LocalDate createdDate;
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<DeliveryInfo> deliveryInfos;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public User setId(UUID id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public User setUsername(String username) {
-        this.username = username;
-        return this;
-    }
 
     public String getEmail() {
         return email;
@@ -57,12 +42,39 @@ public class User implements Serializable {
         return this;
     }
 
-    public Date getCreate() {
-        return create;
+    public LocalDate getCreatedDate() {
+        return createdDate;
     }
 
-    public User setCreate(Date create) {
-        this.create = create;
+    public User setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+        return this;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public User setUsername(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public Set<DeliveryInfo> getDeliveryInfos() {
+        return deliveryInfos;
+    }
+
+    public User setDeliveryInfos(Set<DeliveryInfo> deliveryInfos) {
+        this.deliveryInfos = deliveryInfos;
+        return this;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public User setId(UUID id) {
+        this.id = id;
         return this;
     }
 }
