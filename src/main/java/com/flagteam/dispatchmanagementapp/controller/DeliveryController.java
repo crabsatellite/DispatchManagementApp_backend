@@ -10,6 +10,7 @@ import com.flagteam.dispatchmanagementapp.model.DeliveryStatus;
 import com.flagteam.dispatchmanagementapp.model.Location;
 import com.flagteam.dispatchmanagementapp.service.DeliveryService;
 import com.flagteam.dispatchmanagementapp.exception.UserNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,17 +48,10 @@ public class DeliveryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> upLoadDelivery(@RequestBody DeliveryUploadDto dto,
+    public ResponseEntity<String> upLoadDelivery(@RequestBody DeliveryUploadDto dto,
                                             Principal principal) {
 
-        try {
-            deliveryService.uploadDelivery(dto, principal.getName());
-            ApiResponse<String> response = new ApiResponse<>(200, "SUCCESS");
-            return ResponseEntity.ok(response);
-        } catch (UserNotFoundException e) {
-            ApiErrorResponse error = new ApiErrorResponse("User not found", "USER_NOT_FOUND");
-            ApiResponse<ApiErrorResponse> response = new ApiResponse<>(404, error);
-            return ResponseEntity.status(404).body(response);
-        }
+        deliveryService.uploadDelivery(dto, principal.getName());
+        return new ResponseEntity<String>("Upload delivery is successfully",HttpStatus.OK);
     }
 }
