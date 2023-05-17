@@ -20,21 +20,15 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private final DeliveryItemRepository deliveryItemRepository;
     private final DeliveryInfoRepository deliveryInfoRepository;
-    private final DeliveryStatusRepository deliveryStatusRepository;
-    private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
 
     public DeliveryServiceImpl(DeliveryItemRepository deliveryItemRepository,
                                DeliveryInfoRepository deliveryInfoRepository,
-                               DeliveryStatusRepository deliveryStatusRepository,
-                               ItemRepository itemRepository,
                                UserRepository userRepository,
                                LocationRepository locationRepository) {
         this.deliveryItemRepository = deliveryItemRepository;
         this.deliveryInfoRepository = deliveryInfoRepository;
-        this.deliveryStatusRepository = deliveryStatusRepository;
-        this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
     }
@@ -116,32 +110,18 @@ public class DeliveryServiceImpl implements DeliveryService {
         DeliveryItem deliveryItem = dto.getDeliveryItem();
         Location location = dto.getLocation();
 
-        // Save items
-        Set<Item> items = deliveryItem.getItems();
-        for (Item item : items) {
-            item.setDeliveryItem(deliveryItem);
-            itemRepository.save(item);
-        }
-
-        // Save delivery item
         Set<DeliveryItem> deliveryItems = new HashSet<>();
         deliveryItems.add(deliveryItem);
-        deliveryItemRepository.save(deliveryItem);
-
-        // Save delivery info
+        for (Item item : deliveryItem.getItems()) {
+            item.setDeliveryItem(deliveryItem);
+        }
+        deliveryItem.setDeliveryInfo(deliveryInfo);
+        deliveryStatus.setDeliveryInfo(deliveryInfo);
+        location.setDeliveryInfo(deliveryInfo);
         deliveryInfo.setUser(user.get(0));
         deliveryInfo.setDeliveryStatus(deliveryStatus);
         deliveryInfo.setDeliveryItem(deliveryItems);
+        deliveryInfo.setLocation(location);
         deliveryInfoRepository.save(deliveryInfo);
-
-        // Save location
-        location.setDeliveryInfo(deliveryInfo);
-        location.setCreatedDate(LocalDate.now());
-        location.setUpdatedDate(LocalDate.now());
-        location.setType("COURIER_LAST_LOCATION");
-        locationRepository.save(location);
-
-        // Save delivery status
-        deliveryStatusRepository.save(deliveryStatus);
     }
 }

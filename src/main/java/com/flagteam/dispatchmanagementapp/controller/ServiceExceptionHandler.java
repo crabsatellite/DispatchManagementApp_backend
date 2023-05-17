@@ -26,4 +26,9 @@ public class ServiceExceptionHandler {
     public final ResponseEntity<String> handleUserPasswordMismatchExceptions(Exception ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public final ResponseEntity<String> handleIllegalArgumentException(Exception ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
 }

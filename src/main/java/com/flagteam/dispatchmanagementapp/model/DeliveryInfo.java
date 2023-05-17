@@ -1,5 +1,6 @@
 package com.flagteam.dispatchmanagementapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ public class DeliveryInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="delivery_info_id")
-    private UUID id;
+    private long id;
     @Column(name="delivery_date")
     private LocalDate deliveryDate;
     @Column(name = "warehouse_id")
@@ -39,13 +40,17 @@ public class DeliveryInfo implements Serializable {
     private String pickUpSpeed;
     @Column(name = "delivery_speed")
     private String deliverySpeed;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id")
     private DeliveryStatus deliveryStatus;
-    @OneToMany(mappedBy = "deliveryInfo", cascade=CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id")
+    private Location location;
+    @OneToMany(mappedBy = "deliveryInfo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<DeliveryItem> deliveryItem;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public User getUser() {
@@ -75,11 +80,11 @@ public class DeliveryInfo implements Serializable {
         return this;
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public DeliveryInfo setId(UUID id) {
+    public DeliveryInfo setId(long id) {
         this.id = id;
         return this;
     }
@@ -180,6 +185,15 @@ public class DeliveryInfo implements Serializable {
 
     public DeliveryInfo setDeliverySpeed(String deliverySpeed) {
         this.deliverySpeed = deliverySpeed;
+        return this;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public DeliveryInfo setLocation(Location location) {
+        this.location = location;
         return this;
     }
 }
