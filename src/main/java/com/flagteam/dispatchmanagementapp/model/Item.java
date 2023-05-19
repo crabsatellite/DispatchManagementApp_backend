@@ -1,5 +1,7 @@
 package com.flagteam.dispatchmanagementapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 import java.io.Serializable;
@@ -11,18 +13,20 @@ public class Item implements Serializable {
     private static final long versionId=1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @Column(name = "item_id")
+    private long id;
     private String name;
     private int quantity;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name="delivery_item_id")
+    @JsonIgnore
     private DeliveryItem deliveryItem;
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public Item setId(UUID id) {
+    public Item setId(long id) {
         this.id = id;
         return this;
     }

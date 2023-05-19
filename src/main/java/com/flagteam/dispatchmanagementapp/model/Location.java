@@ -1,5 +1,7 @@
 package com.flagteam.dispatchmanagementapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 import java.io.Serializable;
@@ -13,39 +15,21 @@ public class Location implements Serializable {
     private static final long versionId=1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-    private String type;
+    @Column(name="location_id")
+    private long id;
+    private String type = "COURIER_LAST_LOCATION";
     private Double latitude;
     private Double longitude;
-    private LocalDate createdDate;
-    private LocalDate updatedDate;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "delivery_id")
+    @JsonIgnore
+    @OneToOne(mappedBy = "location", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_info_id")
     private DeliveryInfo deliveryInfo;
 
-    public LocalDate getCreatedDate() {
-        return createdDate;
-    }
-
-    public Location setCreatedDate(LocalDate createdDate) {
-        this.createdDate = createdDate;
-        return this;
-    }
-
-    public LocalDate getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public Location setUpdatedDate(LocalDate updatedDate) {
-        this.updatedDate = updatedDate;
-        return this;
-    }
-
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public Location setId(UUID id) {
+    public Location setId(long id) {
         this.id = id;
         return this;
     }

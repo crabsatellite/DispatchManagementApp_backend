@@ -15,13 +15,14 @@ public class User implements Serializable {
     private static final long versionId=1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @Column(name = "user_id")
+    private long id;
     private String username;
     private String email;
     private String password;
     private LocalDate createdDate;
-    @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade=CascadeType.ALL)
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<DeliveryInfo> deliveryInfos;
 
     public String getEmail() {
@@ -69,11 +70,11 @@ public class User implements Serializable {
         return this;
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public User setId(UUID id) {
+    public User setId(long id) {
         this.id = id;
         return this;
     }

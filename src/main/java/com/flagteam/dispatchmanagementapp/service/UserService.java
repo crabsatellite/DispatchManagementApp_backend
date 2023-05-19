@@ -43,8 +43,7 @@ public class UserService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void add(User user) {
 
-        user.setId(UUID.randomUUID());
-        if (userRepository.existsById(user.getId()) || !userRepository.findByUsername(user.getUsername()).isEmpty()) {
+        if (!userRepository.findByUsername(user.getUsername()).isEmpty()) {
             throw new UserAlreadyExistException("User already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));

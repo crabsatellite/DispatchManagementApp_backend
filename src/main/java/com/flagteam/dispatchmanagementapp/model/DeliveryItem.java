@@ -14,20 +14,20 @@ public class DeliveryItem implements Serializable {
     private static final long versionId=1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JoinColumn(name = "delivery_item_id")
-    private UUID id;
+    @Column(name = "delivery_item_id")
+    private long id;
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_info_id")
     private DeliveryInfo deliveryInfo;
     @OneToMany(mappedBy = "deliveryItem", cascade=CascadeType.ALL)
     private Set<Item> items;
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public DeliveryItem setId(UUID id) {
+    public DeliveryItem setId(long id) {
         this.id = id;
         return this;
     }
