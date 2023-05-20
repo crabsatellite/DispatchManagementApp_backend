@@ -1,27 +1,19 @@
 package com.flagteam.dispatchmanagementapp.service;
 
-import com.flagteam.dispatchmanagementapp.exception.UserPasswordMismatchException;
-import com.flagteam.dispatchmanagementapp.model.Token;
 import com.flagteam.dispatchmanagementapp.exception.UserAlreadyExistException;
 import com.flagteam.dispatchmanagementapp.exception.UserNotFoundException;
+import com.flagteam.dispatchmanagementapp.exception.UserPasswordMismatchException;
+import com.flagteam.dispatchmanagementapp.model.Token;
 import com.flagteam.dispatchmanagementapp.model.User;
 import com.flagteam.dispatchmanagementapp.repository.UserRepository;
 import com.flagteam.dispatchmanagementapp.util.JwtUtil;
-import org.springframework.format.datetime.joda.LocalDateParser;
+import java.time.LocalDate;
+import java.util.List;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserService {

@@ -1,11 +1,8 @@
 package com.flagteam.dispatchmanagementapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
-
 import java.io.Serializable;
-import java.util.UUID;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "item_table")

@@ -1,13 +1,29 @@
 package com.flagteam.dispatchmanagementapp.dto;
 
-import java.util.List;
-
 public class ApiResponse<T> {
-    private int status;
-    private T data;
+  private int status;
+  private T data;
 
-    public ApiResponse(int status, T data) {
-        this.status = status;
-        this.data = data;
-    }
+  public ApiResponse() {}
+
+  public ApiResponse(int status, T data) {
+    this.status = status;
+    this.data = data;
+  }
+
+  public int getStatus() {
+    return status;
+  }
+
+  public void setStatus(int status) {
+    this.status = status;
+  }
+
+  public T getData() {
+    return data;
+  }
+
+  public void setData(T data) {
+    this.data = data;
+  }
 }
