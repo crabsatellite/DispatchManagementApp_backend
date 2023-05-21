@@ -1,6 +1,6 @@
 # Dispatch Management Application
 ## Overview
-The Dispatch Management Application is a robust Java-based system designed to manage and monitor the flow of deliveries within a logistics operation. It is designed using a microservices architecture and follows a layered approach, with controllers, services, and repositories being the main layers. The system also ensures secure access with a JWT authentication system.
+The Dispatch Management Application is a robust Java-based SpringBoot system designed to manage and monitor the flow of deliveries within a logistics operation. It is designed using a microservices architecture and follows a layered approach, with controllers, services, and repositories being the main layers. The system also ensures secure access with a JWT authentication system.
 
  [Frontend](https://github.com/zilinli0130/dispatch_management_app_frontend)
 
